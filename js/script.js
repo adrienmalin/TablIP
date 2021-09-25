@@ -1,5 +1,5 @@
 function updateHost(input) {
-    input.style.backgroundImage = 'url(wait.gif)'
+    input.style.backgroundImage = 'url(img/wait.gif)'
     input.style.fontStyle = "italic"
     fetch(new Request("updateHost.php", {
         method:"POST",
@@ -10,7 +10,7 @@ function updateHost(input) {
             input.style.backgroundImage = ''
             input.style.fontStyle = ""
         } else {
-            input.style.backgroundImage = 'url(nok.png)'
+            input.style.backgroundImage = 'url(img/nok.png)'
         }
     })
 }

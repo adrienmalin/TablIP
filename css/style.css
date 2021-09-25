@@ -1,0 +1,10 @@
+
+.td-input {
+    padding: 0;
+  }
+  
+.td-input input[type="text"]:not(.browser-default) {
+    margin: 0;
+    background-repeat: no-repeat;
+    background-position: right center;
+}

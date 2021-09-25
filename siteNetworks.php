@@ -1,7 +1,6 @@
 <?php
 $MAX_LINES = 2500;
 
-include "connect.php";
 $siteName = $_GET["site"];
 // Check if site is known
 $site = $db->prepare('SELECT id from Sites WHERE Name=:siteName');
@@ -13,17 +12,19 @@ if (!$siteId) {
 }
 ?>
 
-<html>
-    <head>
-        <title>TablIP - <?=$siteName?></title>
-        <link rel="stylesheet" href="style.css"/>
-        <script src="script.js"></script>
-    </head>
-    <body>
         <header>
-            <h1>TablIP</h1>
-            <h2><?=$siteName?></h2>
+            <nav>
+                <div class="nav-wrapper navbar-fixed cyan lighten-2">
+                    <a href="." class="brand-logo center">TablIP</a>
+                    <div>
+                        <a href="." class="breadcrumb">Sites</a>
+                        <a href=".?Site=<?=$siteName?>" class="breadcrumb"><?=$siteName?></a>
+                    </div>
+                </div>
+            </nav>
         </header>
+        <div class="container">
+            <h1><?=$siteName?></h1>
 
 <?php
 $networks = $db->query("SELECT * FROM `Networks` WHERE `SiteId` = $siteId");
@@ -33,71 +34,81 @@ while ($network = $networks->fetch())
     $networkAddress = (int) $network["Address"];
     $networkMask = (int) $network["Mask"];
 ?>
-        <table style="width:100%">
-            <caption><?=$network['Name']." : ".long2ip($networkAddress)." / ".long2ip($networkMask)?><caption>
-            <thead>
-                <tr>
-                    <th>Adresse IP</th>
-                    <th>Nom d'hôte</th>
-                    <th>FQDN</th>
-                    <th>Adresse MAC</th>
-                    <th>Commentaires</th>
-                <tr>
-                    <td><em><?= long2ip($networkAddress)?></em></td>
-                    <td colspan="4"><em>Adresse réseau</em></td>
-                </tr>
-                </tr>
-            </thead>
-            <tbody>
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title"><?=$network['Name']." @ ".long2ip($networkAddress)." / ".long2ip($networkMask)?></span>
+                    <table class="striped responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Adresse IP</th>
+                                <th>Nom d'hôte</th>
+                                <th>FQDN</th>
+                                <th>Adresse MAC</th>
+                                <th>Commentaires</th>
+                            <tr>
+                                <td><em><?= long2ip($networkAddress)?></em></td>
+                                <td colspan="4"><em>Adresse réseau</em></td>
+                            </tr>
+                            </tr>
+                        </thead>
+                        <tbody>
 <?php
     for ($ip = $networkAddress + 1; ($ip+1 & $networkMask) == $networkAddress && $ip < $networkAddress + $MAX_LINES; $ip++ ) {
         $hosts = $db->query("SELECT * from `Hosts` WHERE IPAddress=$ip AND NetworkId=$networkId");
         $host = $hosts->fetch();
 ?>
-                <tr>
-                    <form>
-                        <input type="hidden" name="Ip" value=<?=$ip?>/>
-                        <input type="hidden" name="NetworkId" value=<?=$networkId?>/>
-                        <td><?=long2ip($ip)?></td>
-                        <td><input type="text" onchange="updateHost(this)" name='Hostname' value="<?=$host["Hostname"]?>"/></td>
-                        <td><input type="text" onchange="updateHost(this)" name='FQDN' value="<?=$host["FQDN"]?>"/></td>
-                        <td><input type="text" onchange="updateHost(this)" name='MacAddress' value="<?=$host["MacAddress"]?>"/></td>
-                        <td><input type="text" onchange="updateHost(this)" name='Comments' value="<?=$host["Comments"]?>"/></td>
-                    </form>
-                </tr>
+                            <tr>
+                                <form>
+                                    <input type="hidden" name="Ip" value=<?=$ip?>/>
+                                    <input type="hidden" name="NetworkId" value=<?=$networkId?>/>
+                                    <td><?=long2ip($ip)?></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='Hostname' value="<?=$host["Hostname"]?>"/></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='FQDN' value="<?=$host["FQDN"]?>"/></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='MacAddress' value="<?=$host["MacAddress"]?>"/></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='Comments' value="<?=$host["Comments"]?>"/></td>
+                                </form>
+                            </tr>
 <?php
     }
 ?>                  
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td><em><?= long2ip($ip)?></em></td>
-                        <td colspan="4"><em>Adresse de diffusion</em></td>
-                    </tr>
-                </tfoot>
-        </table>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td><em><?= long2ip($ip)?></em></td>
+                                <td colspan="4"><em>Adresse de diffusion</em></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
 <?php
 }
 $networks->closeCursor();
 ?>
 
-        <form name="addNetwork" id="addNetwork" action="addNetwork.php" method="post">
-            <fieldset class="add">
-                <legend>Ajouter un réseau</legend>
-                <label for="nameInput">Nom</label>
-                <input type="text" id="nameInput" name="name" required/>
-                <label for="gatewayInput">Passerelle</label>
-                <input type="text" id="gatewayInput" name="gateway" pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"/>
-                <label for="maskInput">Masque</label>
-                <input type="text" id="maskInput" name="mask" pattern="^((0|128|192|224|240|248|252|255)\.0\.0.0|255\.(0|128|192|224|240|248|252|255)\.0\.0|255\.255\.(0|128|192|224|240|248|252|255)\.0|255\.255\.255\.(0|128|192|224|240|248|252|255))$"'/>
-                <input type="hidden" name="siteId" value="<?=$siteId?>"/>
-                <input type="hidden" name="siteName" value="<?=$siteName?>"/>
-                <button id="addButton" type="submit">Ajouter</button>
-            </fieldset>
-        </form>
+            <div class="card teal lighten-5">
+                <div class="card-content">
+                    <span class="card-title">Nouveau réseau</span>
+                    <form name="addNetwork" id="addNetwork" action="addNetwork.php" method="post">
+                        <input type="hidden" name="siteId" value="<?=$siteId?>"/>
+                        <input type="hidden" name="siteName" value="<?=$siteName?>"/>
+                        <div class="input-field">
+                            <label for="nameInput">Nom</label>
+                            <input type="text" class="validate" id="nameInput" name="name" placeholder="LAN" required/>
+                        </div>
+                        <div class="input-field">
+                            <label for="gatewayInput">Passerelle</label>
+                            <input type="text" class="validate" id="gatewayInput" name="gateway" placeholder="192.168.0.1" pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"/>
+                        </div>
+                        <div class="input-field">
+                            <label for="maskInput">Masque</label>
+                            <input type="text" class="validate" id="maskInput" name="mask" placeholder="255.255.255.0" pattern="^((0|128|192|224|240|248|252|255)\.0\.0.0|255\.(0|128|192|224|240|248|252|255)\.0\.0|255\.255\.(0|128|192|224|240|248|252|255)\.0|255\.255\.255\.(0|128|192|224|240|248|252|255))$"'/>
+                        </div>
+                        <button type="submit" class="btn-floating halfway-fab waves-effect waves-light teal"><i class="material-icons">add</i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-        <footer>
-            <a href=".">Accueil</a>
-        </footer>
-    </body>
-</html>
+
+
