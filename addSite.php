@@ -1,14 +1,17 @@
 <?php
-if (!isset($_POST['siteName'])) {
-    die("Nom du site manquant !<br/><a href='javascript:history.back(1);'>Revenir en arrière</a>");
+$siteName = filter_input(INPUT_POST, "siteName", FILTER_SANITIZE_STRING);
+if (!$siteName) {
+    header("Location: 400.php");
+    exit;
 }
 include "connect.php";
 try {
     $insert = $db->prepare("INSERT INTO Sites(Name) VALUES(:name)");
-    $insert->execute(['name' => $_POST['siteName']]);
-    header("Location: .?site=${_POST['siteName']}");
-    exit;
+    $insert->execute(['name' => $siteName]);
+    $siteId = $db->lastInsertId();
+    header("Location: site.php?id=$siteId");
 } catch(Exception $e) {
-    echo($e->getMessage() . "<br/><a href='javascript:history.back(1);'>Revenir en arrière</a>");
+    header("Location: 500.php");
+    exit;
 }
 ?>

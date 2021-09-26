@@ -1,36 +1,33 @@
 <?php
-if (!(isset($_POST["Ip"])
-&& isset($_POST["NetworkId"])
-&& isset($_POST["Hostname"])
-&& isset($_POST["FQDN"])
-&& isset($_POST["MacAddress"])
-&& isset($_POST["Comments"]))) {
-    header("HTTP/1.x 400 Bad Request");
-    die();
+$ip = filter_input(INPUT_POST, "ip", FILTER_VALIDATE_INT);
+$networkId = filter_input(INPUT_POST, "networkId", FILTER_VALIDATE_INT);
+$hostname = filter_input(INPUT_POST, "hostname", FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
+$fqdn = filter_input(INPUT_POST, "fqdn", FILTER_VALIDATE_DOMAIN);
+$macAddress = filter_input(INPUT_POST, "macAddress", FILTER_VALIDATE_MAC);
+$comments = filter_input(INPUT_POST, "comments", FILTER_SANITIZE_STRING);
+if (!($ip && $networkId)) {
+    header("Location: 400.php");
+    exit;
 }
-
-$ip = (int) $_POST["Ip"];
-$networkId = (int) $_POST["NetworkId"];
-
+include "connect.php";
 try {
-    include "connect.php";
     $update = $db->prepare("
         INSERT INTO Hosts(IpAddress, NetworkId, Hostname, FQDN, MacAddress, Comments)
         VALUES($ip, $networkId, :i_hostname, :i_fqdn, :i_macAddress, :i_comments)
         ON DUPLICATE KEY UPDATE Hostname = :u_hostname, FQDN = :u_fqdn, MacAddress = :u_macAddress, Comments = :u_comments
     ");
     $update->execute([
-        'i_hostname' => $_POST["Hostname"],
-        'i_fqdn' => $_POST["FQDN"],
-        'i_macAddress' => $_POST["MacAddress"],
-        'i_comments' => $_POST["Comments"],
-        'u_hostname' => $_POST["Hostname"],
-        'u_fqdn' => $_POST["FQDN"],
-        'u_macAddress' => $_POST["MacAddress"],
-        'u_comments' => $_POST["Comments"]
+        'i_hostname' => $hostname,
+        'i_fqdn' => $fqdn,
+        'i_macAddress' => $macAddress,
+        'i_comments' => $comments,
+        'u_hostname' => $hostname,
+        'u_fqdn' => $fqdn,
+        'u_macAddress' => $macAddress,
+        'u_comments' => $comments
     ]);
 }  catch(Exception $e) {
-    header("HTTP/1.x 500 " . $e->getMessage());
-    die($e->getMessage());
+    header("Location: 500.php");
+    exit;
 }
 ?>

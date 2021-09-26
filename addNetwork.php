@@ -1,27 +1,22 @@
 <?php
-if (!(isset($_POST['name'])
-&& isset($_POST['gateway'])
-&& isset($_POST['mask'])
-&& isset($_POST['siteId'])
-&& isset($_POST['siteName']))) {
-    die("Erreur : données manquantes !<br/><a href='javascript:history.back(1);'>Revenir en arrière</a>");
+$name = filter_input(INPUT_POST, "siteName", FILTER_SANITIZE_STRING);
+$gateway = ip2long(filter_input(INPUT_POST, "gateway", FILTER_VALIDATE_IP));
+$mask = ip2long(filter_input(INPUT_POST, "mask", FILTER_VALIDATE_IP));
+$siteId = filter_input(INPUT_POST, "siteId", FILTER_VALIDATE_INT);
+if (!($name && $gateway && $mask && $siteId)) {
+    header("Location: 400.php");
+    exit;
 }
-
-$siteId = (int) $_POST['siteId'];
-$gateway = ip2long($_POST['gateway']);
-$mask = ip2long($_POST['mask']);
 $networkAddress = $gateway & $mask;
-
 include "connect.php";
 try {
     $insert = $db->prepare("INSERT INTO Networks(Name, Address, Mask, SiteId) VALUES(:name, $networkAddress, $mask, $siteId)");
     $insert->execute(['name' => $_POST['name']]);
     $networkId = $db->lastInsertId();
     $insert = $db->exec("INSERT INTO Hosts(IPAddress, NetworkId, Comments) VALUES($gateway, $networkId, 'Passerelle')");
-
-    header("Location: .?site=${_POST['siteName']}");
+    header("Location: network.php?networkId=$networkId");
 } catch(Exception $e) {
-    echo($e->getMessage() . "<br/><a href='javascript:history.back(1);'>Revenir en arrière</a>");
+    header("Location: 500.php");
+    exit;
 }
-exit;
 ?>

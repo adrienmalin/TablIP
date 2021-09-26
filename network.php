@@ -1,0 +1,90 @@
+<?php
+$networkId = filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT);
+if (!$networkId) {
+    header("Location: 400.php");
+    exit;
+}
+include "connect.php";
+$network = $db->query("SELECT * from `Networks` WHERE id=$networkId")->fetch();
+$networkName = $network["Name"];
+if (!$networkName) {
+    header("Location: 404.php");
+    exit;
+}
+$networkAddress = $network["Address"];
+$networkAddressStr = long2ip($networkAddress);
+$networkMask = $network["Mask"];
+$networkMaskStr = long2ip($networkMask);
+$siteId = $network["SiteId"];
+$site = $db->query("SELECT Name from `Sites` WHERE id=$siteId")->fetch();
+$siteName = $site["Name"];
+if (!$siteName) {
+    header("Location: 404.php");
+    exit;
+}
+?>
+<html>
+    <head>
+        <title>TablIP - <?=$networkName?></title>
+        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/icons.css"/>
+        <link rel="stylesheet" href="css/materialize.css"/>
+        <script type="text/javascript" src="js/script.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <script type="text/javascript" src="js/materialize.js"></script>
+        <header>
+            <nav class="nav-wrapper navbar-fixed teal lighten-2">
+                <a href="." class="breadcrumb">TablIP</a>
+                <a href="site.php?id=<?=$siteId?>" class="breadcrumb"><?=$siteName?></a>
+                <a class="breadcrumb"><?=$networkName?></a>
+            </nav>
+        </header>
+        <div class="container">
+            <div class="card">
+                <div class="card-content">
+                    <table class="striped">
+                        <thead>
+                            <tr>
+                                <th>Adresse IP</th>
+                                <th>Nom d'hôte</th>
+                                <th>FQDN</th>
+                                <th>Adresse MAC</th>
+                                <th>Commentaires</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="td-input"><input type="text" name='ip' value="<?=$networkAddressStr?>" disabled/></td>
+                                <td class="td-input" colspan="4"><input type="text" value="Adresse réseau" disabled/></td>
+                            </tr>
+<?php
+    for ($ip = $networkAddress + 1; ($ip+1 & $networkMask) == $networkAddress; $ip++ ) {
+        $host = $db->query("SELECT * from `Hosts` WHERE IPAddress=$ip AND NetworkId=$networkId")->fetch();
+?>
+                            <tr>
+                                <form>
+                                    <input type="hidden" name="ip" value="<?=$ip?>"/>
+                                    <input type="hidden" name="networkId" value="<?=$networkId?>"/>
+                                    <td class="td-input"><input type="text" value="<?=long2ip($ip)?>" disabled/></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='hostname' value="<?=$host["Hostname"]?>"/></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='fqdn' value="<?=$host["FQDN"]?>"/></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='macAddress' value="<?=$host["MacAddress"]?>"/></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='comments' value="<?=$host["Comments"]?>"/></td>
+                                </form>
+                            </tr>
+<?php
+    }
+?>                  
+                            <tr>
+                                <td class="td-input"><input type="text" name='ip' value="<?=long2ip($ip)?>" disabled/></td>
+                                <td class="td-input" colspan="4"><input type="text" value="Adresse de diffusion" disabled/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

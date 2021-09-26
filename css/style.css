@@ -1,10 +1,32 @@
 
 .td-input {
-    padding: 0;
-  }
+  padding: 0;
+}
   
 .td-input input[type="text"]:not(.browser-default) {
-    margin: 0;
-    background-repeat: no-repeat;
-    background-position: right center;
+  margin: 0;
+}
+
+.pending::after {
+  content: "sync";
+  font-family: 'Material Icons';
+  -moz-font-feature-settings: 'liga';
+  color: grey;
+  position: absolute;
+}
+
+.ok::after {
+  content: "done";
+  font-family: 'Material Icons';
+  -moz-font-feature-settings: 'liga';
+  color: green;
+  position: absolute;
+}
+
+.nok::after {
+  content: "sync_problem";
+  font-family: 'Material Icons';
+  -moz-font-feature-settings: 'liga';
+  color: red;
+  position: absolute;
 }

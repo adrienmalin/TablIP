@@ -10,6 +10,6 @@ try {
     $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(Exception $e) {
-    die($e->getMessage() . "<br/><a href='javascript:history.back(1);'>Revenir en arrière</a>");
+    header("Location: 500.php");
 }
 ?>

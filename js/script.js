@@ -1,24 +1,23 @@
+function showCard(card, button) {
+    card.classList.remove('scale-out')
+    card.classList.add('scale-in')
+    button.classList.add('scale-out')
+}
+
 function updateHost(input) {
-    input.style.backgroundImage = 'url(img/wait.gif)'
-    input.style.fontStyle = "italic"
+    input.parentElement.classList.remove("ok")
+    input.parentElement.classList.remove("nok")
+    input.parentElement.classList.add("pending")
     fetch(new Request("updateHost.php", {
         method:"POST",
         body:new FormData(input.form),
         mode:"cors"
     })).then(response => {
+        input.parentElement.classList.remove("pending")
         if (response.ok) {
-            input.style.backgroundImage = ''
-            input.style.fontStyle = ""
+            input.parentElement.classList.add("ok")
         } else {
-            input.style.backgroundImage = 'url(img/nok.png)'
+            input.parentElement.classList.add("nok")
         }
     })
-}
-
-function checkMask(input) {
-    if (input.checkValidity()) {
-
-    } else {
-        input.setCustomValidity("Masque incorrect")
-    }
 }
