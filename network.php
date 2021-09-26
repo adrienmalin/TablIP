@@ -44,6 +44,8 @@ if (!$siteName) {
         <div class="container">
             <div class="card">
                 <div class="card-content">
+                    <h5><?=$networkName?></h5>
+                    <p>@ <?=$networkAddressStr?> / <?=$networkMaskStr?></p>
                     <table class="striped">
                         <thead>
                             <tr>
@@ -82,7 +84,7 @@ if (!$siteName) {
 ?>                  
                             <tr>
                                 <td class="td-input"><input type="text" name='ip' value="<?=long2ip($ip)?>" disabled/></td>
-                                <td class="td-input" colspan="4"><input type="text" value="Adresse de diffusion" disabled/></td>
+                                <td class="td-input" colspan="5"><input type="text" value="Adresse de diffusion" disabled/></td>
                             </tr>
                         </tbody>
                     </table>
