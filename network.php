@@ -52,12 +52,13 @@ if (!$siteName) {
                                 <th>FQDN</th>
                                 <th>Adresse MAC</th>
                                 <th>Commentaires</th>
+                                <th>Lien</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td class="td-input"><input type="text" name='ip' value="<?=$networkAddressStr?>" disabled/></td>
-                                <td class="td-input" colspan="4"><input type="text" value="Adresse réseau" disabled/></td>
+                                <td class="td-input" colspan="5"><input type="text" value="Adresse réseau" disabled/></td>
                             </tr>
 <?php
     for ($ip = $networkAddress + 1; ($ip+1 & $networkMask) == $networkAddress; $ip++ ) {
@@ -68,10 +69,12 @@ if (!$siteName) {
                                     <input type="hidden" name="ip" value="<?=$ip?>"/>
                                     <input type="hidden" name="networkId" value="<?=$networkId?>"/>
                                     <td class="td-input"><input type="text" value="<?=long2ip($ip)?>" disabled/></td>
-                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='hostname' value="<?=$host["Hostname"]?>"/></td>
-                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='fqdn' value="<?=$host["FQDN"]?>"/></td>
-                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='macAddress' value="<?=$host["MacAddress"]?>"/></td>
-                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name='comments' value="<?=$host["Comments"]?>"/></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name="hostname" pattern="^[A-Za-z0-9_-]*$" value="<?=$host["Hostname"]?>"/></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name="fqdn" pattern="^[a-zA-Z0-9._-]*$" value="<?=$host["FQDN"]?>"/></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name="macAddress" pattern="^([a-fA-F0-9]{2}[:-]{1}){5}[a-fA-F0-9]{2}$" title="XX:XX:XX:XX:XX:XX" value="<?=$host["MacAddress"]?>"/></td>
+                                    <td class="td-input"><input type="text" onchange="updateHost(this)" name="comments" value="<?=$host["Comments"]?>"/></td>
+                                    <td class="td-input"><input type="url" onchange="updateHost(this)" name="link" value="<?=$host["Link"]?>"/></td>
+                                    <td><a href="<?=$host["Link"]?>" target="_blank"><i class="material-icons">launch</i></a></td>
                                 </form>
                             </tr>
 <?php
