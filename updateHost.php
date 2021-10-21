@@ -14,11 +14,12 @@ if (is_null($ip)
 }
 include "connect.php";
 try {
-    $update = $db->prepare("
-        INSERT INTO Hosts(IpAddress, NetworkId, Hostname, FQDN, MacAddress, Link, Comments)
-        VALUES($ip, $networkId, :i_hostname, :i_fqdn, :i_macAddress, :i_link, :i_comments)
-        ON DUPLICATE KEY UPDATE Hostname = :u_hostname, FQDN = :u_fqdn, MacAddress = :u_macAddress, Comments = :u_comments, Link = :u_link
-    ");
+    $update = $db->prepare(
+      <<<SQL
+      INSERT INTO Hosts(IpAddress, NetworkId, Hostname, FQDN, MacAddress, Link, Comments)
+      VALUES($ip, $networkId, :i_hostname, :i_fqdn, :i_macAddress, :i_link, :i_comments)
+      ON DUPLICATE KEY UPDATE Hostname = :u_hostname, FQDN = :u_fqdn, MacAddress = :u_macAddress, Comments = :u_comments, Link = :u_link
+      SQL);
     $update->execute([
         'i_hostname' => $hostname,
         'i_fqdn' => $fqdn,

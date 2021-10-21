@@ -29,16 +29,18 @@ if (!$siteName) {
         <link rel="stylesheet" href="css/style.css"/>
         <link rel="stylesheet" href="css/icons.css"/>
         <link rel="stylesheet" href="css/materialize.css"/>
-        <script type="text/javascript" src="js/script.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body>
+        <script type="text/javascript" src="js/script.js"></script>
         <script type="text/javascript" src="js/materialize.js"></script>
         <header>
             <nav class="nav-wrapper navbar-fixed teal lighten-2">
-                <a href="." class="breadcrumb">TablIP</a>
-                <a href="site.php?id=<?=$siteId?>" class="breadcrumb"><?=$siteName?></a>
-                <a class="breadcrumb"><?=$networkName?></a>
+                <div class="container">
+                    <a href="." class="breadcrumb">TablIP</a>
+                    <a href="site.php?id=<?=$siteId?>" class="breadcrumb"><?=$siteName?></a>
+                    <a class="breadcrumb"><?=$networkName?></a>
+                </div>
             </nav>
         </header>
         <div class="container">

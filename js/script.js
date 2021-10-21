@@ -5,6 +5,11 @@ function showCard(card, button) {
 }
 
 function updateHost(input) {
+    if (input.value) {
+        input.required = true
+    } else {
+        input.required = false
+    }
     if (input.form.checkValidity()) {
         var td = input.parentElement
         var tr = td.parentElement

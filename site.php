@@ -18,15 +18,17 @@ if (!$siteName) {
         <link rel="stylesheet" href="css/style.css"/>
         <link rel="stylesheet" href="css/icons.css"/>
         <link rel="stylesheet" href="css/materialize.css"/>
-        <script type="text/javascript" src="js/script.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body>
+        <script type="text/javascript" src="js/script.js"></script>
         <script type="text/javascript" src="js/materialize.js"></script>
         <header>
             <nav class="nav-wrapper navbar-fixed teal lighten-2">
-                <a href="." class="breadcrumb">TablIP</a>
-                <a class="breadcrumb"><?=$siteName?></a>
+                <div class="container">
+                    <a href="." class="breadcrumb">TablIP</a>
+                    <a class="breadcrumb"><?=$siteName?></a>
+                </div>
             </nav>
         </header>
         <div class="container">
@@ -58,9 +60,11 @@ foreach ($db->query("SELECT * FROM `Networks` WHERE `SiteId` = $siteId ORDER BY 
                         <label for="maskInput">Masque</label>
                         <input type="text" class="validate" id="maskInput" name="mask" placeholder="255.255.255.0" pattern="^(255\.255\.(248|252|255)\.0|255\.255\.255\.(0|128|192|224|240|248|252|255))$" title="Plus grand masque autorisé : 255.255.248.0"/>
                     </div>
-                    <button class="btn waves-effect waves-light" type="submit" name="action">Ajouter
-                        <i class="material-icons right">add</i>
-                    </button>
+                    <div class="card-action right-align">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Ajouter
+                            <i class="material-icons right">add</i>
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

@@ -4,14 +4,16 @@
         <link rel="stylesheet" href="css/style.css"/>
         <link rel="stylesheet" href="css/icons.css"/>
         <link rel="stylesheet" href="css/materialize.css"/>
-        <script type="text/javascript" src="js/script.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body>
+        <script type="text/javascript" src="js/script.js"></script>
         <script type="text/javascript" src="js/materialize.js"></script>
         <header>
             <nav class="nav-wrapper navbar-fixed teal lighten-2">
+              <div class="container">
                 <a class="breadcrumb">TablIP</a>
+              </div>
             </nav>
         </header>
         <div class="container">
@@ -21,7 +23,7 @@
 <?php
 include "connect.php";
 foreach ($db->query("SELECT * FROM `Sites` ORDER BY `Name`") as $site) {
-    print "            </li><a href='site.php?id=${site['id']}' class='collection-item'>${site['Name']}</a>\n";
+    print "            <a href='site.php?id=${site['id']}' class='collection-item'>${site['Name']}</a>\n";
 }
 ?>
                 </div>
@@ -34,9 +36,10 @@ foreach ($db->query("SELECT * FROM `Sites` ORDER BY `Name`") as $site) {
                         <label for="siteName">Nom</label>
                         <input type="text" class="validate" id="siteName" name="siteName" placeholder="Site" required/>
                     </div>
-                    <button class="btn waves-effect waves-light" type="submit" name="action">Ajouter
-                        <i class="material-icons right">add</i>
-                    </button>
+                    <div class="card-action right-align">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Ajouter
+                            <i class="material-icons right">add</i>
+                        </button>
                     </div>
                 </form>
             </div>

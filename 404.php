@@ -13,17 +13,14 @@ header("HTTP/1.1 404 Not Found");
     <body>
         <script type="text/javascript" src="js/materialize.js"></script>
         <header>
-            <nav>
-                <div class="nav-wrapper navbar-fixed teal lighten-2">
-                    <a href="." class="brand-logo center">TablIP</a>
-                    <div>
-                        <a href="." class="breadcrumb">Sites</a>
-                    </div>
-                </div>
+            <nav class="nav-wrapper navbar-fixed teal lighten-2">
+                <div class="container">
+                    <a href="." class="breadcrumb">TablIP</a>
+                <div class="container">
             </nav>
         </header>
         <div class="container">
-            <h1>Erreur</h1>
+            <h4>Erreur</h4>
             <p>La ressource demandée n'a pas été trouvée</p>
             <a class="waves-effect waves-light btn" href='javascript:history.back(1);'><i class="material-icons left">arrow_back</i>Retour</a>
         </div>
