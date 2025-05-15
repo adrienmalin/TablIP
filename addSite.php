@@ -1,8 +1,10 @@
 <?php
 $siteName = filter_input(INPUT_POST, "siteName", FILTER_SANITIZE_STRING);
 if (!$siteName) {
-    header("Location: 400.php");
-    exit;
+    /*header("Location: 400.php");
+    exit;*/
+    include "400.php";
+    die();
 }
 include "connect.php";
 try {
